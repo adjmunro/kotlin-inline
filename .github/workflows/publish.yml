@@ -6,6 +6,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  packages: write
+  pages: write
+
 jobs:
   dokka:
     uses: ./.github/workflows/dokka.yml
