@@ -1,5 +1,5 @@
 # Kotlin Inline
-[Documentaion](https://adjmunro.github.io/project-inline/)
+[Documentation](https://adjmunro.github.io/project-inline/)
 > *This was probably a bad idea, but damn if it isn't kinda useful.*
 
 Specifically, this includes:
