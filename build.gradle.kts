@@ -104,7 +104,7 @@ publishing {
         // Publish to GitHub Packages
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/adjmunro/inline")
+            url = uri("https://maven.pkg.github.com/adjmunro/project-inline")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
