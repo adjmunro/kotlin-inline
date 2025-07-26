@@ -68,9 +68,6 @@ class ReturnExtTest {
 
     @Test
     fun `nulls should always return null when ignore is default`(): TestResult = runTest {
-        // Given: any value
-        val value = "anything"
-
         // When: nulls is called with default ignore
         val result = nulls()
 
@@ -92,9 +89,6 @@ class ReturnExtTest {
 
     @Test
     fun `unit should always return Unit when ignore is default`(): TestResult = runTest {
-        // Given: any value
-        val value = "anything"
-
         // When: unit is called with default ignore
         val result = unit()
 
@@ -116,9 +110,6 @@ class ReturnExtTest {
 
     @Test
     fun `truth should always return true when ignore is default`(): TestResult = runTest {
-        // Given: any value
-        val value = "anything"
-
         // When: truth is called with default ignore
         val result = truth()
 
@@ -140,9 +131,6 @@ class ReturnExtTest {
 
     @Test
     fun `falsehood should always return false when ignore is default`(): TestResult = runTest {
-        // Given: any value
-        val value = "anything"
-
         // When: falsehood is called with default ignore
         val result = falsehood()
 
