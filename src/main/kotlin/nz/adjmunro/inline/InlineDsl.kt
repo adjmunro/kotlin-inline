@@ -8,7 +8,6 @@ package nz.adjmunro.inline
     AnnotationTarget.CLASS,
     AnnotationTarget.CONSTRUCTOR,
     AnnotationTarget.FUNCTION,
-    AnnotationTarget.TYPEALIAS,
     AnnotationTarget.PROPERTY,
 )
 @DslMarker @PublishedApi

@@ -2,12 +2,9 @@ package nz.adjmunro.inline
 
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class ParallelExtTest {
@@ -27,7 +24,7 @@ class ParallelExtTest {
     }
 
     @Test
-    fun `parallelMap on Sequence returns sequence returns correct results in parallel`(): TestResult = runTest {
+    fun `parallelMap on Sequence return correct results in parallel`(): TestResult = runTest {
         // Given: A sequence of integers
         val input = sequenceOf(5, 6, 7)
 
