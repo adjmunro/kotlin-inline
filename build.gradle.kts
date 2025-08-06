@@ -103,7 +103,7 @@ kotlin {
 }
 
 // The `Test` type is only used for JVM tests.
-tasks.withType<Test>().configureEach {
+tasks.named<Test>("jvmTest") {
     useJUnitPlatform()
     finalizedBy(tasks.named("jacocoTestReport"))
     reports {
