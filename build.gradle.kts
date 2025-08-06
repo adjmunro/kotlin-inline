@@ -2,10 +2,11 @@ import org.gradle.accessors.dm.LibrariesForLibs.VersionAccessors
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.dokka)
-    jacoco
+    alias { libs.plugins.kotlin.multiplatform }
+    alias { libs.plugins.android.library } apply true
+    alias { libs.plugins.dokka }
     `maven-publish`
+    jacoco
 }
 
 private val Project.semver: String by lazy {
@@ -22,24 +23,23 @@ private fun Project.version(selector: VersionAccessors.() -> Provider<String>): 
 group = version { project.group.id }
 version = semver
 
-java {
-    sourceCompatibility = JavaVersion.toVersion(version { java.toolchain })
-    targetCompatibility = JavaVersion.toVersion(version { java.bytecode })
-
-    withSourcesJar()
+tasks.wrapper {
+    gradleVersion = "latest"
 }
 
 kotlin {
     // Require explicit visibility & return types.
     explicitApi()
 
+    // Enable browsing compiled bytecode in consumer's IDE.
+    withSourcesJar(publish = true)
+
     // JDK version used by compiler & tooling.
-    jvmToolchain(version { java.toolchain } .toInt())
+    val javaToolchain = version { java.toolchain }
+    val javaBytecode = version { java.bytecode }
+    jvmToolchain(jdkVersion = javaToolchain.toInt())
 
     compilerOptions {
-        // Target version of the generated JVM bytecode.
-        jvmTarget = JvmTarget.fromTarget(target = version { java.bytecode })
-
         // Free compiler args
         freeCompilerArgs.addAll(
             "-opt-in=kotlin.experimental.ExperimentalTypeInference",
@@ -49,38 +49,80 @@ kotlin {
         // Enable extra K2 warnings.
         extraWarnings = true
     }
+
+    // Define target platforms (and target-specific compiler options, publishing settings, tasks, artefacts, etc).
+    jvm {
+        // Enable publishing decompiled source code in consumer's IDE.
+        isSourcesPublishable = true
+
+        java {
+            compilerOptions {
+                // Target version of the generated JVM bytecode.
+                jvmTarget = JvmTarget.fromTarget(target = javaBytecode)
+            }
+
+            sourceCompatibility = JavaVersion.toVersion(javaToolchain)
+            targetCompatibility = JavaVersion.toVersion(javaBytecode)
+        }
+    }
+    androidTarget {
+        // Enable publishing decompiled source code in consumer's IDE.
+        isSourcesPublishable = true
+
+        android {
+            compilerOptions {
+                jvmTarget = JvmTarget.fromTarget(target = javaBytecode)
+            }
+            compileOptions {
+                sourceCompatibility = JavaVersion.toVersion(javaToolchain)
+                targetCompatibility = JavaVersion.toVersion(javaBytecode)
+            }
+        }
+        compilerOptions.jvmTarget = JvmTarget.fromTarget(target = javaBytecode)
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.kotlin.bom))
+            implementation(libs.bundles.core)
+        }
+        commonTest.dependencies {
+            implementation(libs.bundles.test)
+        }
+        androidMain {
+            android {
+                namespace = "nz.adjmunro.inline"
+                compileSdk = version { project.android.compileSdk }.toInt()
+                defaultConfig.minSdk = version { project.android.minSdk }.toInt()
+            }
+        }
+        jvmTest.dependencies {
+            implementation(libs.junit5)
+        }
+    }
 }
 
-sourceSets {
-    getting { kotlin.srcDirs("src/main/kotlin") }
-    getting { kotlin.srcDirs("src/test/kotlin") }
-}
-
-tasks.wrapper {
-    gradleVersion = "latest"
-}
-
-tasks.test {
+// The `Test` type is only used for JVM tests.
+tasks.named<Test>("jvmTest") {
     useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
+    finalizedBy(tasks.named("jacocoTestReport"))
     reports {
         junitXml.required = true
         html.required = true
-    }
-
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required = true
-        html.required = true
-        html.outputLocation = layout.buildDirectory.dir("reports/jacoco/html")
     }
 }
 
 jacoco {
     reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
+
+    tasks.register<JacocoReport>("jacocoTestReport") {
+        dependsOn(tasks.named("jvmTest"))
+        reports {
+            xml.required = true   // XML report for CI summary
+            html.required = true  // HTML report for local inspection
+            html.outputLocation = layout.buildDirectory.dir("reports/jacoco/html")
+        }
+    }
 }
 
 tasks.register<Jar>("dokkaJar") {
@@ -96,12 +138,16 @@ publishing {
             groupId = version { project.group.id }
             artifactId = version { project.artifact.id }
             version = semver
+
+            // Include Dokka-generated Javadoc in the publication.
+            artifact(tasks.named("dokkaJar"))
         }
     }
     repositories {
+        // Publishing to local M.2 repository
         mavenLocal()
 
-        // Publish to GitHub Packages
+        // Publishing to GitHub Packages
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/adjmunro/project-inline")
@@ -121,10 +167,4 @@ publishing {
 //            }
 //        }
     }
-}
-
-dependencies {
-    implementation(platform(libs.kotlin.bom))
-    implementation(libs.bundles.core)
-    testImplementation(libs.bundles.test)
 }
