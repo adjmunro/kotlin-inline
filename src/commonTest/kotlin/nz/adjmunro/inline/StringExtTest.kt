@@ -3,7 +3,7 @@ package nz.adjmunro.inline
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class StringExtTest {
     @Test

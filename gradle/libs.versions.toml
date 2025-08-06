@@ -74,7 +74,6 @@ core = [
 ]
 test = [
     "jetbrains-coroutines-test",
-    "junit5",
     "kotest-assertions",
     "kotest-property",
     "kotlin-test",

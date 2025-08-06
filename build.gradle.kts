@@ -86,6 +86,9 @@ kotlin {
             implementation(project.dependencies.platform(libs.kotlin.bom))
             implementation(libs.bundles.core)
         }
+        commonTest.dependencies {
+            implementation(libs.bundles.test)
+        }
         androidMain {
             android {
                 namespace = "nz.adjmunro.inline"
@@ -94,7 +97,7 @@ kotlin {
             }
         }
         jvmTest.dependencies {
-            implementation(libs.bundles.test)
+            implementation(libs.junit5)
         }
     }
 }

@@ -5,7 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class CastExtTest {
     @Test
@@ -16,7 +16,7 @@ class CastExtTest {
         // When: castOrThrow is called with matching type
         val result = value.castOrThrow<String>()
 
-        // Then: returns casted value
+        // Then: returns cast value
         result.shouldBe("string")
 
         // When/Then: castOrThrow is called with non-matching type and throws
@@ -34,7 +34,7 @@ class CastExtTest {
         // When: castOrNull is called with matching type
         val result = value.castOrNull<String>()
 
-        // Then: returns casted value
+        // Then: returns cast value
         result.shouldBe("string")
 
         // When: castOrNull is called with non-matching type
@@ -62,7 +62,7 @@ class CastExtTest {
             "default"
         }
 
-        // Then: returns casted value
+        // Then: returns cast value
         result.shouldBe("string")
 
         // When: castOrElse is called with non-matching type

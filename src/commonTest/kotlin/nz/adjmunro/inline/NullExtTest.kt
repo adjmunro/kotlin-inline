@@ -2,7 +2,7 @@ package nz.adjmunro.inline
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.TestResult
 
