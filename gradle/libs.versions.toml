@@ -10,8 +10,10 @@
 project-group-id = "nz.adjmunro"
 project-artifact-id = "inline"
 project-version-major = "0"
-project-version-minor = "2"
+project-version-minor = "3"
 project-version-patch = "0"
+project-android-compileSdk = "36"  # Enable access to newer APIs (can be higher than targetSdk).
+project-android-minSdk = "21"      # Minimum supported Android version that the app can be installed on.
 
 ####################################################################################################
 #####################################   Language & Compiler   ######################################
@@ -29,6 +31,7 @@ kotlin-language = "2.2.0"
 ####################################################################################################
 ########################################   App Libraries   #########################################
 ####################################################################################################
+android-gradle-plugin = "8.11.1"
 dokka = "2.0.0"
 jetbrains-coroutines = "1.10.2"
 junit5 = "5.13.4"
@@ -40,8 +43,9 @@ kotest = "5.9.1"
 ####                                                                                             ###
 ####################################################################################################
 [plugins]
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-language" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-language" }
 
 ####################################################################################################
 ####                                                                                             ###
